@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual Environments
+venv/
+env/
+.env/
+.venv/
+
+# Jupyter Notebooks checkpoints
+.ipynb_checkpoints/
+
+# Outputs - Don't push large model files or generated CSVs
+outputs/*.joblib
+outputs/submission.csv
+
+# But DO push the plots folder (empty, with a .gitkeep)
+!outputs/plots/
+
+# Data - These files are too large for GitHub (90MB+)
+data/training_data.csv
+data/test_data.csv
+zebra_zerveai.csv
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
