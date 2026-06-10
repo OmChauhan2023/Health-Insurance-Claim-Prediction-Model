@@ -62,11 +62,11 @@ features:
 
 preprocessing:
   random_state: 42
-  smote_ratio: 0.1
-  under_ratio: 0.3
+  smote_ratio: 0.08
+  under_ratio: 0.4
 
 model:
   ensemble_weights:
-    lightgbm: 0.1231
-    xgboost: 0.2778
-    catboost: 0.5991
+    lightgbm: 0.2810
+    xgboost: 0.5388
+    catboost: 0.1803
