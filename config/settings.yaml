@@ -62,8 +62,9 @@ features:
 
 preprocessing:
   random_state: 42
-  smote_ratio: 0.08
-  under_ratio: 0.4
+  # Resampling configurations
+  smote_ratio: 0.05
+  under_ratio: 0.3
 
 model:
   ensemble_weights:

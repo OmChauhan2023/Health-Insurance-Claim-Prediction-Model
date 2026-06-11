@@ -38,3 +38,8 @@ Thumbs.db
 # IDE
 .vscode/
 .idea/
+
+catboost_info/
+outputs/*.joblib
+
+outputs/*.csv

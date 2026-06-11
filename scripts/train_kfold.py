@@ -1,12 +1,12 @@
 """
-ZEBRA Advanced Training Script - K-Fold CV + Rank Averaging + Calibration
+ZEBRA Advanced Training Script - K-Fold CV + Stacking (Meta-Learner) + OOF Target Encoding
 
 Strategy:
-1. 5-Fold Stratified Cross-Validation to generate Out-Of-Fold (OOF) predictions
-2. OOF predictions used to calibrate final ensemble (no data leakage)
-3. Final test predictions are averaged across all 5 folds per model
-4. Rank averaging compared against weighted average, best one selected
-5. Isotonic calibration on the best ensemble
+1. 5-Fold Stratified Cross-Validation
+2. Out-Of-Fold (OOF) Target Encoding (prevents target leakage)
+3. Feature Selection & Resampling done INSIDE the fold (100% leak-free)
+4. Stacking: Logistic Regression meta-learner trained on OOF predictions
+5. Final Isotonic Calibration on Stacking predictions
 """
 import sys
 from pathlib import Path
@@ -16,7 +16,7 @@ import numpy as np
 from sklearn.model_selection import StratifiedKFold
 from sklearn.metrics import roc_auc_score
 from sklearn.isotonic import IsotonicRegression
-from scipy.stats import rankdata
+from sklearn.linear_model import LogisticRegression
 
 project_root = Path(__file__).resolve().parent.parent
 sys.path.append(str(project_root))
@@ -29,18 +29,9 @@ from src.models import get_all_models
 from src.validation import normalized_gini
 
 
-def rank_average(predictions_dict):
-    """Rank averaging — converts predictions to ranks then averages."""
-    n = len(list(predictions_dict.values())[0])
-    ranked = np.zeros(n)
-    for preds in predictions_dict.values():
-        ranked += rankdata(preds) / n
-    return ranked / len(predictions_dict)
-
-
 def main():
     print("=" * 80)
-    print("ZEBRA ADVANCED TRAINING - 5-Fold CV + Rank Averaging + Calibration")
+    print("ZEBRA ADVANCED TRAINING - Stacking + OOF Target Encoding")
     print("=" * 80)
 
     config = load_config()
@@ -53,25 +44,22 @@ def main():
     random_state  = config['preprocessing']['random_state']
     n_folds       = 5
 
-    # --- Load full training data ---
+    # --- Load full data ---
     print("\n--- [1] Loading Data ---")
     train_df, test_df = load_data(train_path, test_path)
 
-    train_ids = train_df['id']
-    y_all = train_df[target_col]
-    X_all = train_df.drop(columns=[target_col, 'id'])
-
     test_ids = test_df['id']
+    y_all = train_df[target_col]
+    X_all_raw = train_df.drop(columns=[target_col, 'id'])
     X_test_raw = test_df.drop(columns=['id'])
 
-    print(f"Training samples: {len(X_all):,} | Test samples: {len(X_test_raw):,}")
+    print(f"Training samples: {len(X_all_raw):,} | Test samples: {len(X_test_raw):,}")
 
-    # --- Preprocessing (fit on all training data) ---
-    print("\n--- [2] Full Preprocessing Pipeline ---")
+    # --- Global Preprocessing (Non-leaky) ---
+    print("\n--- [2] Global Feature Engineering & Imputation ---")
     feat_eng = ZebraFeatureEngineer()
-    X_all_eng  = feat_eng.fit_transform(X_all)
+    X_all_eng  = feat_eng.fit_transform(X_all_raw)
     X_test_eng = feat_eng.transform(X_test_raw)
-    print(f"Features after engineering: {X_all_eng.shape[1]}")
 
     imputer = ZebraImputer(
         config['features']['binary'],
@@ -81,126 +69,130 @@ def main():
     X_all_imp  = imputer.fit_transform(X_all_eng)
     X_test_imp = imputer.transform(X_test_eng)
 
-    encoder = ZebraTargetEncoder(config['features']['categorical'], smoothing=10)
-    X_all_enc  = encoder.fit_transform(X_all_imp, y_all)
-    X_test_enc = encoder.transform(X_test_imp)
-
-    # Feature selection on all data
-    selector = ZebraFeatureSelector(n_features=80, random_state=random_state)
-    selector.fit(X_all_enc, y_all)
-    X_all_sel  = selector.transform(X_all_enc)
-    X_test_sel = selector.transform(X_test_enc)
-
-    # Save preprocessing artifacts
     joblib.dump(feat_eng,  output_dir / 'feat_eng.joblib')
     joblib.dump(imputer,   output_dir / 'imputer.joblib')
-    joblib.dump(encoder,   output_dir / 'encoder.joblib')
-    joblib.dump(selector,  output_dir / 'selector.joblib')
 
     # --- 5-Fold Cross Validation ---
-    print(f"\n--- [3] {n_folds}-Fold Stratified Cross-Validation ---")
+    print(f"\n--- [3] {n_folds}-Fold CV (OOF Encoding + Resampling + Training) ---")
     skf = StratifiedKFold(n_splits=n_folds, shuffle=True, random_state=random_state)
     model_names = ['LightGBM', 'XGBoost', 'CatBoost']
 
-    # Containers
-    oof_preds   = {name: np.zeros(len(X_all_sel)) for name in model_names}
-    test_preds  = {name: np.zeros(len(X_test_sel)) for name in model_names}
+    # Containers for OOF and Test predictions
+    oof_preds   = {name: np.zeros(len(X_all_imp)) for name in model_names}
+    test_preds  = {name: np.zeros(len(X_test_imp)) for name in model_names}
 
-    X_all_arr = X_all_sel.values if hasattr(X_all_sel, 'values') else X_all_sel
     y_all_arr = y_all.values
 
-    for fold, (train_idx, val_idx) in enumerate(skf.split(X_all_arr, y_all_arr), 1):
+    for fold, (train_idx, val_idx) in enumerate(skf.split(X_all_imp, y_all_arr), 1):
         print(f"\n  --- Fold {fold}/{n_folds} ---")
-        X_tr, X_val = X_all_arr[train_idx], X_all_arr[val_idx]
-        y_tr, y_val = y_all_arr[train_idx], y_all_arr[val_idx]
+        X_tr_fold = X_all_imp.iloc[train_idx].copy()
+        y_tr_fold = y_all_arr[train_idx]
+        X_val_fold = X_all_imp.iloc[val_idx].copy()
 
-        # Resample only the training fold
+        # 1. OOF Target Encoding
+        encoder = ZebraTargetEncoder(config['features']['categorical'], smoothing=10)
+        X_tr_enc = encoder.fit_transform(X_tr_fold, y_tr_fold)
+        X_val_enc = encoder.transform(X_val_fold)
+        X_test_enc = encoder.transform(X_test_imp)
+
+        # 2. Resampling (only on training fold)
         X_tr_res, y_tr_res = apply_resampling(
-            X_tr, y_tr,
+            X_tr_enc, y_tr_fold,
             smote_ratio=config['preprocessing']['smote_ratio'],
             under_ratio=config['preprocessing']['under_ratio'],
             random_state=random_state
         )
 
+        # 3. Feature Selection
+        selector = ZebraFeatureSelector(keep_percentile=0.65, random_state=random_state)
+        X_tr_sel = selector.fit_transform(X_tr_res, y_tr_res)
+        X_val_sel = selector.transform(X_val_enc)
+        X_test_sel = selector.transform(X_test_enc)
+
+        # Save fold-specific preprocessing for inference later if needed
+        joblib.dump(encoder, output_dir / f'encoder_fold{fold}.joblib')
+        joblib.dump(selector, output_dir / f'selector_fold{fold}.joblib')
+
+        # 4. Train Models
         fold_models = get_all_models(random_state=random_state)
 
         for name, model in fold_models.items():
             print(f"  Training {name}...")
             if name == 'CatBoost':
                 from sklearn.model_selection import train_test_split
-                X_t, X_e, y_t, y_e = train_test_split(X_tr_res, y_tr_res, test_size=0.1, random_state=random_state)
+                X_t, X_e, y_t, y_e = train_test_split(X_tr_sel, y_tr_res, test_size=0.1, random_state=random_state)
                 model.fit(X_t, y_t, eval_set=(X_e, y_e))
             else:
-                model.fit(X_tr_res, y_tr_res)
+                model.fit(X_tr_sel, y_tr_res)
 
-            oof_preds[name][val_idx] = model.predict_proba(X_val)[:, 1]
+            # Predict OOF and Test
+            oof_preds[name][val_idx] = model.predict_proba(X_val_sel)[:, 1]
             test_preds[name] += model.predict_proba(X_test_sel)[:, 1] / n_folds
 
         # Fold Gini scores
         for name in model_names:
-            fold_gini = normalized_gini(y_val, oof_preds[name][val_idx])
+            fold_gini = normalized_gini(y_all_arr[val_idx], oof_preds[name][val_idx])
             print(f"    {name}: Fold {fold} Gini = {fold_gini:.4f}")
 
     # --- OOF Evaluation ---
-    print("\n--- [4] Full OOF Evaluation ---")
+    print("\n--- [4] Base Models OOF Evaluation ---")
     for name in model_names:
         g = normalized_gini(y_all_arr, oof_preds[name])
         a = roc_auc_score(y_all_arr, oof_preds[name])
         print(f"{name:10} | OOF Gini: {g:.4f} | AUC: {a:.4f}")
 
-    # --- Ensemble Comparison ---
-    print("\n--- [5] Ensemble Comparison ---")
-    weights = config['model']['ensemble_weights']
-    w = {
-        'LightGBM': weights.get('lightgbm', 0.281),
-        'XGBoost':  weights.get('xgboost',  0.539),
-        'CatBoost': weights.get('catboost',  0.180),
-    }
+    # --- Stacking (Meta-Learner) ---
+    print("\n--- [5] Stacking (LightGBM Meta-Learner) ---")
+    meta_X_train = np.column_stack([oof_preds[n] for n in model_names])
+    meta_X_test  = np.column_stack([test_preds[n] for n in model_names])
 
-    # Weighted average
-    weighted_oof = sum(oof_preds[n] * w[n] for n in model_names)
-    weighted_test = sum(test_preds[n] * w[n] for n in model_names)
-    w_gini = normalized_gini(y_all_arr, weighted_oof)
-    print(f"Weighted Avg OOF Gini : {w_gini:.4f}")
+    import lightgbm as lgb
+    meta_model = lgb.LGBMClassifier(
+        n_estimators=100,
+        max_depth=3,
+        num_leaves=7,
+        learning_rate=0.03,
+        subsample=0.8,
+        colsample_bytree=0.8,
+        min_child_samples=50,
+        random_state=random_state,
+        verbose=-1
+    )
+    meta_model.fit(meta_X_train, y_all_arr)
+    joblib.dump(meta_model, output_dir / 'meta_model.joblib')
 
-    # Rank average
-    ranked_oof  = rank_average(oof_preds)
-    ranked_test = rank_average(test_preds)
-    r_gini = normalized_gini(y_all_arr, ranked_oof)
-    print(f"Rank Avg  OOF Gini   : {r_gini:.4f}")
+    stacking_oof_preds = meta_model.predict_proba(meta_X_train)[:, 1]
+    stacking_test_preds = meta_model.predict_proba(meta_X_test)[:, 1]
 
-    # Pick best
-    if r_gini >= w_gini:
-        best_oof  = ranked_oof
-        best_test = ranked_test
-        print(">> Using Rank Averaging")
-    else:
-        best_oof  = weighted_oof
-        best_test = weighted_test
-        print(">> Using Weighted Averaging")
+    stack_gini = normalized_gini(y_all_arr, stacking_oof_preds)
+    print(f"Stacking OOF Gini: {stack_gini:.4f}")
 
-    # --- Isotonic Calibration on OOF ---
-    print("\n--- [6] Isotonic Calibration ---")
+    # Feature Importance of Meta-Learner
+    print("Meta-Learner Feature Importances:")
+    for name, weight in zip(model_names, meta_model.feature_importances_):
+        print(f"  {name}: {weight}")
+
+    # --- Isotonic Calibration ---
+    print("\n--- [6] Final Isotonic Calibration ---")
     calibrator = IsotonicRegression(out_of_bounds='clip')
-    calibrator.fit(best_oof, y_all_arr)
-    cal_oof  = calibrator.transform(best_oof)
-    cal_test = calibrator.transform(best_test)
+    calibrator.fit(stacking_oof_preds, y_all_arr)
+    cal_oof  = calibrator.transform(stacking_oof_preds)
+    cal_test = calibrator.transform(stacking_test_preds)
 
     final_gini = normalized_gini(y_all_arr, cal_oof)
     final_auc  = roc_auc_score(y_all_arr, cal_oof)
     print("-" * 50)
-    print(f"FINAL OOF Gini (calibrated): {final_gini:.4f} | AUC: {final_auc:.4f}")
+    print(f"FINAL OOF Gini (Calibrated Stacking): {final_gini:.4f} | AUC: {final_auc:.4f}")
     print("-" * 50)
 
-    # --- Save Submission ---
     joblib.dump(calibrator, output_dir / 'calibrator.joblib')
 
+    # --- Save Submission ---
     submission = pd.DataFrame({'id': test_ids, target_col: cal_test})
-    sub_path = output_dir / 'submission_kfold.csv'
+    sub_path = output_dir / 'submission_kfold_stacking.csv'
     submission.to_csv(sub_path, index=False)
     print(f"\nSubmission saved to {sub_path}")
     print("Training complete!")
-
 
 if __name__ == "__main__":
     main()

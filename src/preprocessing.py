@@ -88,11 +88,11 @@ class ZebraTargetEncoder(BaseEstimator, TransformerMixin):
 
 class ZebraFeatureSelector(BaseEstimator, TransformerMixin):
     """
-    Selects top N features by LightGBM feature importance.
+    Selects top features by LightGBM feature importance based on percentile.
     Fit on training data, apply same mask to validation/test.
     """
-    def __init__(self, n_features=80, random_state=42):
-        self.n_features = n_features
+    def __init__(self, keep_percentile=0.65, random_state=42):
+        self.keep_percentile = keep_percentile
         self.random_state = random_state
         self.selected_features = None
 
@@ -109,8 +109,11 @@ class ZebraFeatureSelector(BaseEstimator, TransformerMixin):
             selector_model.feature_importances_,
             index=X_df.columns
         ).sort_values(ascending=False)
-        self.selected_features = importance.head(self.n_features).index.tolist()
-        print(f"Selected top {len(self.selected_features)} features.")
+        
+        keep_count = max(10, int(len(X_df.columns) * self.keep_percentile))
+        self.selected_features = importance.head(keep_count).index.tolist()
+            
+        print(f"Selected top {len(self.selected_features)} features (Top {int(self.keep_percentile * 100)}%).")
         return self
 
     def transform(self, X, y=None):
