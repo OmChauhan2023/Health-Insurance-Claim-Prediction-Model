@@ -131,4 +131,21 @@ class ZebraFeatureEngineer(BaseEstimator, TransformerMixin):
             poly_df = pd.DataFrame(poly_interactions, columns=feature_names, index=X_new.index)
             X_new = pd.concat([X_new, poly_df], axis=1)
 
+        # === 11. Expanded GroupBy Statistical Features ===
+        cat_groupers = ['feature_3', 'feature_7', 'feature_8', 'feature_12']
+        num_targets = ['feature_10', 'feature_24', 'feature_16', 'feature_18']
+        for cat in cat_groupers:
+            if cat in X_new.columns:
+                for num in num_targets:
+                    if num in X_new.columns:
+                        group_mean = X_new.groupby(cat)[num].transform('mean')
+                        group_std = X_new.groupby(cat)[num].transform('std').fillna(0)
+                        group_min = X_new.groupby(cat)[num].transform('min')
+                        group_max = X_new.groupby(cat)[num].transform('max')
+                        
+                        X_new[f'{num}_groupby_{cat}_mean'] = group_mean
+                        X_new[f'{num}_groupby_{cat}_std'] = group_std
+                        X_new[f'{num}_groupby_{cat}_min'] = group_min
+                        X_new[f'{num}_groupby_{cat}_max'] = group_max
+
         return X_new

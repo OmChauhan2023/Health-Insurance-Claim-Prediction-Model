@@ -18,9 +18,9 @@ def get_lightgbm_model(random_state=42):
         'feature_fraction': 0.5824426060495409,
         'bagging_fraction': 0.7393105058690916,
         'bagging_freq': 1,
-        'min_gain_to_split': 0.8001097360401972,
         'random_state': random_state,
-        'verbose': -1
+        'verbose': -1,
+        'n_jobs': 4
     }
     return lgb.LGBMClassifier(**params)
 
@@ -36,10 +36,10 @@ def get_xgboost_model(random_state=42):
         'colsample_bytree': 0.7692629157015227,
         'min_child_weight': 17,
         'reg_alpha': 0.03788798831050035,
-        'reg_lambda': 0.01564247490927308,
         'gamma': 0.6043964592192503,
         'random_state': random_state,
-        'tree_method': 'hist'
+        'tree_method': 'hist',
+        'n_jobs': 4
     }
     return xgb.XGBClassifier(**params)
 
@@ -54,7 +54,8 @@ def get_catboost_model(random_state=42):
         'random_seed': random_state,
         'verbose': False,
         'eval_metric': 'AUC',
-        'early_stopping_rounds': 50
+        'early_stopping_rounds': 50,
+        'thread_count': 4
     }
     return CatBoostClassifier(**params)
 

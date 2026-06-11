@@ -9,6 +9,8 @@ Strategy:
 5. Final Isotonic Calibration on Stacking predictions
 """
 import sys
+import warnings
+warnings.filterwarnings('ignore')
 from pathlib import Path
 import joblib
 import pandas as pd
@@ -167,11 +169,6 @@ def main():
     stack_gini = normalized_gini(y_all_arr, stacking_oof_preds)
     print(f"Stacking OOF Gini: {stack_gini:.4f}")
 
-    # Feature Importance of Meta-Learner
-    print("Meta-Learner Feature Importances:")
-    for name, weight in zip(model_names, meta_model.feature_importances_):
-        print(f"  {name}: {weight}")
-
     # --- Isotonic Calibration ---
     print("\n--- [6] Final Isotonic Calibration ---")
     calibrator = IsotonicRegression(out_of_bounds='clip')
@@ -182,14 +179,14 @@ def main():
     final_gini = normalized_gini(y_all_arr, cal_oof)
     final_auc  = roc_auc_score(y_all_arr, cal_oof)
     print("-" * 50)
-    print(f"FINAL OOF Gini (Calibrated Stacking): {final_gini:.4f} | AUC: {final_auc:.4f}")
+    print(f"FINAL OOF Gini (Calibrated Stacking Meta-Learner): {final_gini:.4f} | AUC: {final_auc:.4f}")
     print("-" * 50)
 
     joblib.dump(calibrator, output_dir / 'calibrator.joblib')
 
     # --- Save Submission ---
     submission = pd.DataFrame({'id': test_ids, target_col: cal_test})
-    sub_path = output_dir / 'submission_kfold_stacking.csv'
+    sub_path = output_dir / 'submission_true_final.csv'
     submission.to_csv(sub_path, index=False)
     print(f"\nSubmission saved to {sub_path}")
     print("Training complete!")
