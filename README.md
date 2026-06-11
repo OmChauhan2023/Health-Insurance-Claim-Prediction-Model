@@ -1,19 +1,22 @@
-<div align="center">
-
 # Health Insurance Claim Prediction
 ### Advanced ML Stacking Ensemble for Risk Assessment
 
 [![Model Version](https://img.shields.io/badge/Version-1.2.0-blueviolet?style=flat-square)](https://github.com/)
 [![Python](https://img.shields.io/badge/Python-3.9+-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
 [![Performance](https://img.shields.io/badge/Gini-0.2860-success?style=flat-square&logo=chart-line)](https://github.com/)
-[![License](https://img.shields.io/badge/License-MIT-lightgrey?style=flat-square)](LICENSE)
 
-**Developed by Team Zebra: Om Chauhan & Lakshit Vedant**
-**Zerve AI Datathon | Techfest IIT Bombay (December 2025)**
+**Team Zebra:**  
+Om Chauhan & Lakshit Vedant  
 
-Engineering a high-performance predictive engine for quantifying policyholder risk and claim probability.
+**Competition:**  
+Zerve AI Datathon  
+Techfest IIT Bombay  
+December 2025  
 
-</div>
+**Final Score:** 0.2860 Normalized Gini
+
+*Engineering a high-performance predictive engine*  
+*for quantifying policyholder risk and claim probability.*
 
 ---
 
@@ -112,15 +115,31 @@ Our optimization journey involved a strict ablation study to isolate the impact 
 | Metric | Score | Rank |
 |--------|-------|------|
 | **Final OOF Gini** | **0.2860** | 🥇 |
-| Baseline Gini | 0.2628 | - |
+| Baseline Gini | 0.2599 | - |
+| **Improvement** | **+10.04%** | 🚀 |
+
+### Optimization Journey
+
+```python
+# Performance progression
+stages = {
+    'Raw Baseline':               0.2599,
+    '+ Feature Engineering':      0.2749,  # +0.0121
+    '+ Optuna Tuning':            0.2832,  # +0.0083
+    '+ Feature Selection':        0.2834,  # +0.0002
+    '+ Stacking Meta-Learner':    0.2848,  # +0.0014
+    '+ Expanded GroupBy Stats':   0.2860,  # +0.0012
+}
+```
 
 ### The Ablation Study
 
 We conducted a rigorous ablation study to evaluate the impact of Advanced Feature Engineering vs Mathematical Ensembling:
 
-| Strategy | Score | Impact vs Baseline | Conclusion |
+| Strategy | Score | Impact vs Previous | Conclusion |
 | :--- | :--- | :--- | :--- |
-| **Baseline (Top 65% Features)** | 0.2834 | - | Strong Base Models |
+| **Raw Baseline (No Feature Eng)** | 0.2599 | - | Weak starting point |
+| **Intermediate (Top 65% Features)** | 0.2834 | +0.0235 | Strong Base Models |
 | **Test 1: GroupBy Features** | 0.2850 | +0.0016 | Highly Predictive |
 | **Test 2: Optuna Meta-Tuning** | 0.2829 | -0.0005 | Overfitting |
 | **Test 3: Rank Blending** | 0.2820 | -0.0014 | Destructive to signal |
