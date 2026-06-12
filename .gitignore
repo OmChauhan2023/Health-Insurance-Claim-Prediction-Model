@@ -43,3 +43,5 @@ catboost_info/
 outputs/*.joblib
 
 outputs/*.csv
+
+.env
