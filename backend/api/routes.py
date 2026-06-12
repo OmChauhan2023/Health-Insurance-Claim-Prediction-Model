@@ -32,10 +32,9 @@ SYSTEM_PROMPT = """You are ZEBRA AI Analyst — an expert assistant for the Heal
 Project context:
 - Dataset: ~500k rows, 50 anonymised features (17 binary, 14 categorical, 19 numeric).
 - Target: binary claim (0/1), heavily imbalanced.
-- Pipeline: ZebraFeatureEngineer → ZebraImputer → 5-Fold Stratified CV → OOF Target Encoding (smoothing=10) → SMOTE+undersampling (0.05/0.30) → Feature Selection (top 65%) → 3 base models (LightGBM, XGBoost, CatBoost) → LightGBM meta-learner stacking → Isotonic Calibration.
-- Results: OOF Gini = 0.8420 | AUC = 0.9210 (calibrated stacking).
-- Base model OOF Ginis: LightGBM 0.793, XGBoost 0.812, CatBoost 0.778.
-- Blend weights for ensemble: LightGBM 28.1%, XGBoost 53.9%, CatBoost 18.0%.
+- Pipeline: ZebraFeatureEngineer → ZebraImputer → 5-Fold Stratified CV → OOF Target Encoding (smoothing=10) → SMOTE+undersampling (0.05/0.30) → Feature Selection (top 180 features / top 65%) → 3 base models (LightGBM, XGBoost, CatBoost) → LightGBM meta-learner stacking → Isotonic Calibration.
+- Results: Normalized Gini = 0.2860 | AUC = 0.6430 (calibrated stacking).
+- Base model OOF Ginis: LightGBM 0.2788, XGBoost 0.2770, CatBoost 0.2786.
 
 Be concise, technically precise, and helpful. Use markdown formatting for code, lists, and tables.
 """
@@ -95,7 +94,7 @@ async def chat_endpoint(request: ChatRequest):
             yield f"data: {json.dumps({'type': 'THOUGHT', 'content': 'Analyzing your question…'})}\n\n"
 
             response_stream = client.models.generate_content_stream(
-                model="gemini-2.0-flash",
+                model="gemini-flash-latest",
                 contents=contents,
                 config=types.GenerateContentConfig(
                     system_instruction=SYSTEM_PROMPT,

@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import ReactECharts from 'echarts-for-react';
 
 const foldData = [
-  { fold: 'Fold 1', lgb: 0.791, xgb: 0.808, cat: 0.774, stack: 0.830 },
-  { fold: 'Fold 2', lgb: 0.796, xgb: 0.815, cat: 0.780, stack: 0.838 },
-  { fold: 'Fold 3', lgb: 0.788, xgb: 0.809, cat: 0.776, stack: 0.831 },
-  { fold: 'Fold 4', lgb: 0.794, xgb: 0.811, cat: 0.779, stack: 0.836 },
-  { fold: 'Fold 5', lgb: 0.796, xgb: 0.816, cat: 0.781, stack: 0.841 },
+  { fold: 'Fold 1', lgb: 0.2734, xgb: 0.2726, cat: 0.2731, stack: 0.2828 },
+  { fold: 'Fold 2', lgb: 0.2713, xgb: 0.2723, cat: 0.2710, stack: 0.2815 },
+  { fold: 'Fold 3', lgb: 0.2752, xgb: 0.2734, cat: 0.2722, stack: 0.2842 },
+  { fold: 'Fold 4', lgb: 0.2851, xgb: 0.2816, cat: 0.2874, stack: 0.2879 },
+  { fold: 'Fold 5', lgb: 0.2896, xgb: 0.2858, cat: 0.2901, stack: 0.2893 },
 ];
 
 const COLORS = ['#3b82f6', '#8b5cf6', '#10b981', '#f59e0b'];
@@ -23,17 +23,17 @@ const Analytics = () => {
   const [activeModel, setActiveModel] = useState('all');
 
   const models = [
-    { key: 'lgb',   label: 'LightGBM',        oof_gini: 0.793, oof_auc: 0.896, color: COLORS[0] },
-    { key: 'xgb',   label: 'XGBoost',          oof_gini: 0.812, oof_auc: 0.906, color: COLORS[1] },
-    { key: 'cat',   label: 'CatBoost',         oof_gini: 0.778, oof_auc: 0.889, color: COLORS[2] },
-    { key: 'stack', label: 'Stacking Ensemble',oof_gini: 0.842, oof_auc: 0.921, color: COLORS[3] },
+    { key: 'lgb',   label: 'LightGBM',        oof_gini: 0.2788, oof_auc: 0.6394, color: COLORS[0] },
+    { key: 'xgb',   label: 'XGBoost',          oof_gini: 0.2770, oof_auc: 0.6385, color: COLORS[1] },
+    { key: 'cat',   label: 'CatBoost',         oof_gini: 0.2786, oof_auc: 0.6393, color: COLORS[2] },
+    { key: 'stack', label: 'Stacking Ensemble',oof_gini: 0.2860, oof_auc: 0.6430, color: COLORS[3] },
   ];
 
   const giniBarOption = {
     tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, backgroundColor: 'rgba(255,255,255,0.95)', borderColor: '#e2e8f0', textStyle: { color: '#0f172a' } },
     grid: { left: 16, right: 16, top: 16, bottom: 16, containLabel: true },
     xAxis: { type: 'category', data: models.map(m => m.label), axisLine: { lineStyle: { color: '#e2e8f0' } }, axisLabel: { color: '#94a3b8', fontSize: 11 } },
-    yAxis: { type: 'value', min: 0.75, max: 0.86, axisLabel: { color: '#94a3b8', fontSize: 11, formatter: v => v.toFixed(3) }, splitLine: { lineStyle: { color: '#f1f5f9' } } },
+    yAxis: { type: 'value', min: 0.26, max: 0.30, axisLabel: { color: '#94a3b8', fontSize: 11, formatter: v => v.toFixed(3) }, splitLine: { lineStyle: { color: '#f1f5f9' } } },
     series: [{
       type: 'bar', barWidth: '50%',
       data: models.map(m => ({ value: m.oof_gini, itemStyle: { color: m.color, borderRadius: [6, 6, 0, 0] } })),
@@ -46,7 +46,7 @@ const Analytics = () => {
     legend: { data: ['LightGBM', 'XGBoost', 'CatBoost', 'Stacking'], top: 0, textStyle: { color: '#94a3b8' }, icon: 'circle' },
     grid: { left: 16, right: 16, top: 40, bottom: 16, containLabel: true },
     xAxis: { type: 'category', data: foldData.map(f => f.fold), axisLabel: { color: '#94a3b8' }, axisLine: { lineStyle: { color: '#e2e8f0' } } },
-    yAxis: { type: 'value', min: 0.77, max: 0.85, axisLabel: { color: '#94a3b8', formatter: v => v.toFixed(3) }, splitLine: { lineStyle: { color: '#f1f5f9' } } },
+    yAxis: { type: 'value', min: 0.26, max: 0.30, axisLabel: { color: '#94a3b8', formatter: v => v.toFixed(3) }, splitLine: { lineStyle: { color: '#f1f5f9' } } },
     series: [
       { name: 'LightGBM',         type: 'line', smooth: true, symbol: 'circle', symbolSize: 7, data: foldData.map(f => f.lgb),   lineStyle: { color: COLORS[0], width: 2.5 }, itemStyle: { color: COLORS[0] } },
       { name: 'XGBoost',          type: 'line', smooth: true, symbol: 'circle', symbolSize: 7, data: foldData.map(f => f.xgb),   lineStyle: { color: COLORS[1], width: 2.5 }, itemStyle: { color: COLORS[1] } },
@@ -72,10 +72,10 @@ const Analytics = () => {
     series: [{
       type: 'radar',
       data: [
-        { value: [0.793, 0.896, 0.88, 0.80, 0.78], name: 'LightGBM',  areaStyle: { color: COLORS[0] + '30' }, lineStyle: { color: COLORS[0] } },
-        { value: [0.812, 0.906, 0.91, 0.84, 0.82], name: 'XGBoost',   areaStyle: { color: COLORS[1] + '30' }, lineStyle: { color: COLORS[1] } },
-        { value: [0.778, 0.889, 0.86, 0.78, 0.76], name: 'CatBoost',  areaStyle: { color: COLORS[2] + '30' }, lineStyle: { color: COLORS[2] } },
-        { value: [0.842, 0.921, 0.93, 0.91, 0.88], name: 'Stacking',  areaStyle: { color: COLORS[3] + '30' }, lineStyle: { color: COLORS[3] } },
+        { value: [0.2788, 0.6394, 0.88, 0.80, 0.78], name: 'LightGBM',  areaStyle: { color: COLORS[0] + '30' }, lineStyle: { color: COLORS[0] } },
+        { value: [0.2770, 0.6385, 0.91, 0.84, 0.82], name: 'XGBoost',   areaStyle: { color: COLORS[1] + '30' }, lineStyle: { color: COLORS[1] } },
+        { value: [0.2786, 0.6393, 0.86, 0.78, 0.76], name: 'CatBoost',  areaStyle: { color: COLORS[2] + '30' }, lineStyle: { color: COLORS[2] } },
+        { value: [0.2860, 0.6430, 0.93, 0.91, 0.88], name: 'Stacking',  areaStyle: { color: COLORS[3] + '30' }, lineStyle: { color: COLORS[3] } },
       ],
     }],
   };
@@ -125,10 +125,10 @@ const Analytics = () => {
               </thead>
               <tbody>
                 {[
-                  ['LightGBM',         '0.7930', '0.8965', '28.1%', COLORS[0]],
-                  ['XGBoost',          '0.8120', '0.9060', '53.9%', COLORS[1]],
-                  ['CatBoost',         '0.7780', '0.8890', '18.0%', COLORS[2]],
-                  ['Stacking (Final)', '0.8420', '0.9210', '—',     COLORS[3]],
+                  ['LightGBM',         '0.2788', '0.6394', '42.1%', COLORS[0]],
+                  ['XGBoost',          '0.2770', '0.6385', '14.5%', COLORS[1]],
+                  ['CatBoost',         '0.2786', '0.6393', '43.4%', COLORS[2]],
+                  ['Stacking (Final)', '0.2860', '0.6430', '—',     COLORS[3]],
                 ].map(([name, gini, auc, wt, color]) => (
                   <tr key={name} className="border-b border-zinc-50 dark:border-zinc-800/50">
                     <td className="py-2.5 pr-4 font-medium text-zinc-800 dark:text-zinc-200 flex items-center gap-2">

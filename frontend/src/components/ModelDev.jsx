@@ -54,7 +54,7 @@ const ModelDev = () => {
         <h2 className="text-2xl font-extrabold tracking-tight mb-1">ZEBRA Model Architecture</h2>
         <p className="text-blue-100 text-sm max-w-xl">
           5-Fold Stacking Ensemble with OOF Target Encoding, SMOTE resampling, and Isotonic Calibration.
-          Final Gini: <strong>0.8420</strong> | Final AUC: <strong>0.9210</strong>
+          Final Gini: <strong>0.2860</strong> | Final AUC: <strong>0.6430</strong>
         </p>
       </div>
 
@@ -77,9 +77,9 @@ const ModelDev = () => {
               <CheckCircle2 size={16} className="text-blue-500" /> Base Models
             </h3>
             {[
-              { name: 'LightGBM', gini: '0.793', weight: '28.1%', color: 'bg-blue-500' },
-              { name: 'XGBoost',  gini: '0.812', weight: '53.9%', color: 'bg-violet-500' },
-              { name: 'CatBoost', gini: '0.778', weight: '18.0%', color: 'bg-emerald-500' },
+              { name: 'LightGBM', gini: '0.278', weight: '42.1%', color: 'bg-blue-500' },
+              { name: 'XGBoost',  gini: '0.277', weight: '14.5%', color: 'bg-violet-500' },
+              { name: 'CatBoost', gini: '0.278', weight: '43.4%', color: 'bg-emerald-500' },
             ].map(m => (
               <div key={m.name} className="mb-3 last:mb-0">
                 <div className="flex justify-between text-xs mb-1">
