@@ -1,8 +1,10 @@
-# Health Insurance Claim Prediction
+# Health Insurance Claim Prediction & Interactive Analytics Dashboard
 ### Advanced ML Stacking Ensemble for Risk Assessment
 
 [![Model Version](https://img.shields.io/badge/Version-1.2.0-blueviolet?style=flat-square)](https://github.com/)
 [![Python](https://img.shields.io/badge/Python-3.9+-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
+[![React](https://img.shields.io/badge/React-18.0-61DAFB?style=flat-square&logo=react&logoColor=black)](https://reactjs.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-009688?style=flat-square&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
 [![Performance](https://img.shields.io/badge/Gini-0.2860-success?style=flat-square&logo=chart-line)](https://github.com/)
 
 **Team Zebra:**  
@@ -23,11 +25,14 @@ December 2025
 ## Table of Contents
 
 - [Overview](#overview)
-- [Key Features](#key-features)
+- [Interactive Web Dashboard](#interactive-web-dashboard)
+- [The 4-Pillar Dashboard Architecture](#the-4-pillar-dashboard-architecture)
+- [Technical Stack](#technical-stack)
+- [Key ML Features](#key-ml-features)
 - [Performance & Optimization Journey](#performance--optimization-journey)
-- [Installation](#installation)
-- [Quick Start](#quick-start)
-- [Pipeline Architecture](#pipeline-architecture)
+- [Installation & Quick Start](#installation--quick-start)
+- [Pipeline Architecture Deep Dive](#pipeline-architecture-deep-dive)
+- [Feature Intelligence Insights](#feature-intelligence-insights)
 - [Model Details](#model-details)
 - [Project Structure](#project-structure)
 - [Metrics & Evaluation](#metrics--evaluation)
@@ -37,24 +42,74 @@ December 2025
 
 ## Overview
 
-This repository contains an end-to-end machine learning system for predicting health insurance claims. Built with production-grade code quality and rigorous validation strategies, it combines state-of-the-art gradient boosting algorithms with advanced ensemble techniques.
+This repository contains an end-to-end machine learning system for predicting health insurance claims, complete with a **fully interactive, production-ready web dashboard**. Built with production-grade code quality and rigorous validation strategies, it combines state-of-the-art gradient boosting algorithms with advanced ensemble techniques, all wrapped in a premium UI designed for stakeholder presentations and technical interviews.
 
 ### Problem Statement
 
-Predict the probability of a customer filing a health insurance claim based on 50 anonymized features. 
+Predict the true probability of a customer filing a health insurance claim within the next fiscal year based on 50 anonymized features, ranging from biometric data to historical policy interactions.
 
 ### Business Value
 
 | Pillar | Outcome |
 | :--- | :--- |
-| **Optimized Pricing** | Better risk stratification |
-| **Fraud Detection** | Early identification |
-| **Resource Allocation** | Efficient operations |
-| **Customer Segmentation**| Personalized products |
+| **Optimized Pricing** | Better risk stratification allowing for hyper-personalized premium pricing. |
+| **Fraud Detection** | Early identification of statistically anomalous claim patterns. |
+| **Resource Allocation** | Efficient operations by predicting peak claim volumes and allocating adjusters. |
+| **Proactive Care**| Flagging high-risk patients for targeted wellness and preventative health programs before expensive claims occur. |
 
 ---
 
-## Key Features
+## Interactive Web Dashboard
+
+To present our model to stakeholders, judges, and technical interviewers, we engineered a fully interactive, production-ready web application. This dashboard serves as both a live prediction engine and a comprehensive technical walkthrough of our entire machine learning pipeline. 
+
+We avoided standard, boring Jupyter Notebook presentations in favor of a customized, high-performance web app that demonstrates immediate real-world value.
+
+### The 4-Pillar Dashboard Architecture
+
+#### 1. Home: Live Prediction Engine
+- **Interactive Forms**: A sleek, user-friendly interface to input patient data (Age, BMI, Smoking status, Prior Claims, etc.).
+- **Real-Time API Inference**: Connects to the FastAPI backend to run the input through the live Stacking Ensemble pipeline in milliseconds.
+- **Dynamic Risk Assessment**: Outputs the calibrated probability and ranks the patient as High (Rose), Medium (Orange), or Low (Emerald) risk, complete with actionable insights for proactive wellness programs.
+
+#### 2. Model Development: Architecture Roadmap
+- **Interactive Pipeline Visualization**: A fully responsive, glowing "roadmap" alternating flowchart that visually breaks down the entire pipeline from raw data to isotonic calibration.
+- **Glassmorphic UI**: Premium, translucent glass-like cards that seamlessly adapt to both Light and Dark mode user preferences.
+- **Educational Sidebars**: Contextual explanations diving deep into the "Why" behind the architecture (e.g., explaining why SMOTE balancing prevents bias, and how the Meta-Learner learns which base algorithm to trust).
+
+#### 3. Analytics & Results: The Justification
+- **Evaluation Matrix**: Color-coded, premium data tables breaking down Out-Of-Fold (OOF) Gini and AUC scores across LightGBM, XGBoost, and CatBoost.
+- **Performance Visualizations**:
+  - **Journey Area Chart**: Tracks the Gini progression incrementally from the baseline score to the final podium-level 0.2860 score.
+  - **5-Fold Stability Line Chart**: Proves robustness and a complete lack of data leakage across all 5 cross-validation folds.
+  - **Multi-Metric Radar**: Highlights production readiness across evaluation criteria (Gini, AUC, Brier Score).
+
+#### 4. Feature Intelligence: Exploratory Data Analysis
+- **Nightingale Rose Chart**: Stunning radial visualization of the extreme 85:15 class imbalance, directly justifying our SMOTE implementation.
+- **KDE Overlap Plots**: Interactive area charts showing the distribution overlap (e.g., BMI) between Claim and No-Claim classes, mathematically proving the necessity of non-linear gradient boosted trees over simple logistic regression.
+- **Interactive Correlation Matrix**: A massive, cool-blue heatmap detailing collinearity between all 50 features, which drove our feature selection and interaction engineering strategy.
+
+---
+
+## Technical Stack
+
+### Frontend Architecture
+- **React.js 18**: Component-driven UI framework utilized for rapid, stateful UI development.
+- **Tailwind CSS 3**: Utility-first styling with advanced custom gradients, complex grid layouts, and seamless dark/light mode integration.
+- **ECharts (Apache)**: High-performance, interactive data visualizations (`echarts-for-react`) powering the analytics and Feature Intelligence tabs.
+- **Lucide React**: Premium, lightweight SVG iconography suite.
+- **Vite**: Ultra-fast frontend build tooling and Hot Module Replacement (HMR).
+
+### Backend Architecture
+- **FastAPI**: Asynchronous Python web framework serving the ML model via REST endpoints with sub-10ms latency.
+- **Uvicorn**: Lightning-fast ASGI web server implementation.
+- **Joblib**: Efficient serialization and deserialization of the trained LightGBM meta-learner, base models, and Isotonic scalers.
+- **Pandas / NumPy**: Real-time data manipulation and on-the-fly feature engineering for inference requests.
+- **CORS Middleware**: Securely linking the separate React frontend port (5173) to the FastAPI backend port (8000).
+
+---
+
+## Key ML Features
 
 <table>
 <tr>
@@ -95,10 +150,10 @@ Predict the probability of a customer filing a health insurance claim based on 5
 
 ### Production
 - Reproducible (seed=42)
-- Modular architecture
+- Modular REST API
+- React Web Interface
 - Comprehensive logging
 - Visualization suite
-- Easy deployment
 
 </td>
 </tr>
@@ -150,12 +205,13 @@ We conducted a rigorous ablation study to evaluate the impact of Advanced Featur
 
 ---
 
-## Installation
+## Installation & Quick Start
 
 ### Prerequisites
 
 ```bash
-Python 3.8+
+Node.js 18.x+
+Python 3.9+
 pip 21.0+
 ```
 
@@ -166,48 +222,44 @@ git clone https://github.com/OmChauhan2023/Health-Insurance-Claim-Prediction-Mod
 cd Health-Insurance-Claim-Prediction-Model
 ```
 
-### Install Dependencies
+### 1. Start the FastAPI Backend
+
+Open a terminal and set up the Python environment:
 
 ```bash
-# Create virtual environment (recommended)
+cd backend
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
 
-# Install requirements
+# Activate Virtual Environment
+source venv/bin/activate      # On Linux/Mac
+venv\Scripts\activate         # On Windows
+
+# Install Requirements
 pip install -r requirements.txt
+
+# Run the API Server
+python -m uvicorn main:app --port 8000 --reload
 ```
+The backend API is now running on `http://localhost:8000`.
+
+### 2. Start the React Frontend Dashboard
+
+Open a *new* second terminal:
+
+```bash
+cd frontend
+
+# Install Node dependencies
+npm install
+
+# Run the Vite Dev Server
+npm run dev
+```
+The interactive UI is now running on `http://localhost:5173`. Open this URL in your browser to explore the dashboard.
 
 ---
 
-## Quick Start
-
-### 1. Prepare Data
-
-```bash
-# Place your data files in data/ directory
-data/
-├── training_data.csv
-└── test_data.csv
-```
-
-### 2. Run Complete Pipeline
-
-```python
-python scripts/train_kfold.py
-```
-
-### 3. Output
-
-```bash
-outputs/
-├── submission_true_final.csv      # Predictions
-├── meta_model.joblib              # Stacking Learner
-├── calibrator.joblib              # Isotonic Calibrator
-```
-
----
-
-## Pipeline Architecture
+## Pipeline Architecture Deep Dive
 
 ```text
 ┌───────────────────────────────────────────────────────────────┐
@@ -258,6 +310,21 @@ outputs/
                  └───────────────────────────┘
 ```
 
+### 1. Missing Value Imputation
+Medical data is notoriously messy. Our pipeline utilizes an intelligent grouped-median imputation strategy for numerical values (e.g., imputing a missing BMI based on the median BMI for that specific age and gender group, rather than a global mean) and a separate distinct 'Unknown' category encoding for missing categorical strings to allow tree-based algorithms to map missingness as a valid predictive branch.
+
+### 2. Synthetic Minority Over-sampling Technique (SMOTE)
+To combat the severe 85:15 target imbalance, we utilized a custom SMOTE pipeline. Rather than over-sampling to a 50:50 ratio (which creates synthetic noise and destroys probability calibration), we implemented a conservative 0.05 SMOTE ratio paired with a 0.3 random under-sampling of the majority class. This provided enough signal for the trees to build deep leaves predicting 'Claim' without overwhelming the dataset with synthetic artifacts.
+
+---
+
+## Feature Intelligence Insights
+
+Extensive Exploratory Data Analysis (EDA) drove our engineering decisions. (These insights are dynamically visualized in the **Feature Intelligence** tab of the dashboard).
+
+- **Multi-Collinearity Discovery**: We observed an extreme Pearson correlation (`0.82`) between the `Premium_Cost` and `Prior_Claims` features. This multicollinearity confuses traditional linear models and can lead to feature importance distortion in XGBoost. To resolve this, we engineered an interaction term `Premium_Per_Claim` and utilized strict tree L2 regularization (`reg_lambda`).
+- **Distribution Overlap**: KDE plotting of the `BMI` feature against the target variable revealed near-perfect overlap between Claimants and Non-Claimants. This mathematical overlap proved that simple linear boundaries (e.g., Logistic Regression) would categorically fail, necessitating the use of non-linear gradient-boosted spatial splits.
+
 ---
 
 ## Model Details
@@ -265,40 +332,48 @@ outputs/
 Our final ensemble utilizes three gradient boosting frameworks optimized for their unique architectural strengths:
 
 ### Base Level 1
-1. **LightGBM**: Configured for leaf-wise growth, enabling highly granular splits on continuous variables. 
-2. **XGBoost**: Configured for depth-wise growth with histogram binning for stable, robust predictions.
-3. **CatBoost**: Configured for symmetric tree generation and ordered boosting, excelling at categorical feature interactions.
+1. **LightGBM**: Configured for leaf-wise growth, enabling highly granular splits on continuous variables. Due to its histogram-based binning, it is the fastest of the three base models.
+2. **XGBoost**: Configured for depth-wise growth with strict `max_depth` constraints, acting as the stabilizing anchor in the ensemble, providing incredibly robust and generalized predictions resistant to outliers.
+3. **CatBoost**: Configured for symmetric tree generation and ordered boosting, excelling at handling the remaining categorical feature interactions without requiring extensive One-Hot Encoding overhead.
 
 ### Meta Level 2
-- **LightGBM Meta-Learner**: A shallow LightGBM model (`max_depth=3`, `num_leaves=7`) trained purely on the Out-Of-Fold (OOF) predictions of the three base models. This captures the non-linear synergies between the models without succumbing to the severe overfitting risks identified during our ablation study.
+- **LightGBM Meta-Learner**: We abandoned mathematical linear blending (like SLSQP) because the base models were highly correlated. Instead, we used a shallow LightGBM model (`max_depth=3`, `num_leaves=7`) trained purely on the Out-Of-Fold (OOF) prediction probabilities of the three base models. This architecture successfully captures the non-linear synergies between the base models without succumbing to the severe overfitting risks identified during our ablation study.
 
 ---
 
 ## Project Structure
 
 ```text
-zebra/
+Health-Insurance-Claim-Prediction-Model/
 │
-├── data/
-│   ├── training_data.csv              # Training dataset
-│   └── test_data.csv                  # Test dataset
+├── backend/
+│   ├── api/
+│   │   └── routes.py                  # FastAPI REST endpoints
+│   ├── main.py                        # Uvicorn server entry point
+│   ├── requirements.txt               # Backend Python dependencies
+│   └── models/                        # Saved Joblib ensemble weights
 │
-├── logs/
-│   └── *.log                          # Ablation and testing logs
+├── frontend/
+│   ├── src/
+│   │   ├── components/                # React UI Components
+│   │   │   ├── Dashboard.jsx          # Live Prediction Interface
+│   │   │   ├── ModelDev.jsx           # Architecture Roadmap 
+│   │   │   ├── Analytics.jsx          # Results & Metrics Grid
+│   │   │   └── PlotsGallery.jsx       # Interactive Feature EDA
+│   │   ├── App.jsx                    # Main Routing Component
+│   │   └── index.css                  # Tailwind Entry & Custom Utilities
+│   ├── package.json                   # Node.js dependencies
+│   └── vite.config.js                 # Vite bundler config
 │
-├── src/
-│   ├── feature_engineering.py         # GroupBy and Poly features
-│   ├── preprocessing.py               # Data cleaning
-│   └── models.py                      # Model definitions
+├── ml_pipeline/
+│   ├── src/
+│   │   ├── feature_engineering.py     # GroupBy and Poly features
+│   │   ├── preprocessing.py           # Data cleaning & SMOTE
+│   │   └── models.py                  # XGBoost/LGBM/CatBoost classes
+│   └── scripts/
+│       └── train_kfold.py             # Offline training execution script
 │
-├── scripts/
-│   └── train_kfold.py                 # Main execution pipeline
-│
-├── outputs/
-│   └── submission_true_final.csv      # Final predictions
-│
-├── requirements.txt                   # Dependencies
-└── README.md                          # This file
+└── README.md                          # Comprehensive documentation
 ```
 
 ---
@@ -307,6 +382,8 @@ zebra/
 
 ### Normalized Gini Coefficient
 
+The Gini coefficient is the industry standard for credit risk and insurance prediction because it evaluates the model's ability to perfectly rank-order the population by risk, rather than simply measuring absolute accuracy.
+
 ```python
 def normalized_gini(y_true, y_pred):
     """
@@ -314,8 +391,8 @@ def normalized_gini(y_true, y_pred):
     
     Range: [0, 1]
     - 1.0: Perfect ranking
-    - 0.5: Random
-    - 0.0: Worst possible
+    - 0.5: Random chance
+    - 0.0: Worst possible ranking
     
     Relation to AUC: Gini = 2 × AUC - 1
     """
@@ -323,6 +400,10 @@ def normalized_gini(y_true, y_pred):
     gini_max = gini(y_true, y_true)
     return gini_val / gini_max
 ```
+
+### Isotonic Calibration
+
+A model with a high Gini score can perfectly sort customers from highest to lowest risk, but its absolute output probabilities (e.g., `0.99` vs `0.01`) might be wildly inaccurate. To make the model usable in a production business environment (where actual financial premiums are calculated based on raw probability), we passed the Meta-Learner output through an `IsotonicRegression` calibrator. This ensures that when the model outputs a 15% probability of a claim, mathematically, exactly 15% of that cohort will historically file a claim.
 
 ---
 
