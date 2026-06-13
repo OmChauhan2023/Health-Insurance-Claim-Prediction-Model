@@ -1,24 +1,37 @@
 # Health Insurance Claim Prediction & Interactive Analytics Dashboard
 ### Advanced ML Stacking Ensemble for Risk Assessment
 
-[![Model Version](https://img.shields.io/badge/Version-1.2.0-blueviolet?style=flat-square)](https://github.com/)
+
 [![Python](https://img.shields.io/badge/Python-3.9+-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
 [![React](https://img.shields.io/badge/React-18.0-61DAFB?style=flat-square&logo=react&logoColor=black)](https://reactjs.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-009688?style=flat-square&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![SQLite](https://img.shields.io/badge/SQLite-3-003B57?style=flat-square&logo=sqlite&logoColor=white)](https://sqlite.org/)
 [![Performance](https://img.shields.io/badge/Gini-0.2860-success?style=flat-square&logo=chart-line)](https://github.com/)
 
 **Team Zebra:**  
 Om Chauhan & Lakshit Vedant  
 
 **Competition:**  
-Zerve AI Datathon  
-Techfest IIT Bombay  
-December 2025  
+Zerve AI Datathon | Techfest IIT Bombay | December 2025  
 
 **Final Score:** 0.2860 Normalized Gini
 
-*Engineering a high-performance predictive engine*  
-*for quantifying policyholder risk and claim probability.*
+*Engineering a high-performance predictive engine for quantifying policyholder risk, now supercharged with a full-stack, enterprise-grade inference dashboard.*
+
+---
+
+## 🌟 Advanced Architecture & Dashboard Features
+
+We completely overhauled the project to transition from a static machine learning model into a **full-stack, production-grade intelligence application**.
+
+* **Live What-If Scenario Builder**: Replaced static form inputs with interactive, real-time sliders. Adjusting patient age, BMI, or claim history instantly triggers a live inference call to the FastAPI backend, recalculating risk in milliseconds.
+* **Explainable AI (XAI) Clinical PDF Reports**: The system acts as an automated underwriter. Clicking "Export PDF" instantly generates a perfectly formatted, 1-page clinical text document using `jsPDF`. The system translates complex SHAP values into plain English sentences to justify the AI's decision to medical staff.
+* **Live Inference Database Logging**: Implemented a real-time `SQLite` database on the backend (`predictions_history` table). Every time the model makes a prediction, a unique `Patient ID` is generated and logged, allowing for live tracking of underwriting activity.
+* **Premium 5-Column Dashboard Architecture**: Redesigned the analytics layout into a tight, highly optimized grid. 
+  * Features a brand new **Population Risk Distribution** analytics module, showing the exact percentage breakdown of Low, Medium, and High-risk patients dynamically evaluated by the system.
+  * A live **Recent Patient Evaluations Table** streaming directly from the SQLite database.
+* **Gemini-Powered Chat Assistant**: Integrated an interactive floating chat panel connected to a Gemini AI endpoint, allowing users to "chat with the dashboard" and ask questions about the underlying ML model or underwriting procedures.
+* **Refined Hero Layout**: A seamless, wide 3-column top section ensuring zero wasted screen space and an incredibly premium aesthetic.
 
 ---
 
@@ -36,7 +49,6 @@ December 2025
 - [Model Details](#model-details)
 - [Project Structure](#project-structure)
 - [Metrics & Evaluation](#metrics--evaluation)
-- [References](#references)
 
 ---
 
@@ -67,10 +79,11 @@ We avoided standard, boring Jupyter Notebook presentations in favor of a customi
 
 ### The 4-Pillar Dashboard Architecture
 
-#### 1. Home: Live Prediction Engine
-- **Interactive Forms**: A sleek, user-friendly interface to input patient data (Age, BMI, Smoking status, Prior Claims, etc.).
+#### 1. Home: Live Prediction Engine & Database
+- **Interactive "What-If" Sliders**: A sleek, user-friendly interface to manipulate patient data (Age, BMI, Smoking status, Prior Claims, etc.) on the fly.
 - **Real-Time API Inference**: Connects to the FastAPI backend to run the input through the live Stacking Ensemble pipeline in milliseconds.
-- **Dynamic Risk Assessment**: Outputs the calibrated probability and ranks the patient as High (Rose), Medium (Orange), or Low (Emerald) risk, complete with actionable insights for proactive wellness programs.
+- **Explainable AI (SHAP) PDF Generator**: Automatically translates the model's complex SHAP value outputs into human-readable clinical justifications, generating a professional, downloadable PDF Underwriting Report on demand.
+- **Live SQLite Feed**: The dashboard connects to a live backend database, streaming the 5 most recent underwriting predictions directly onto the screen.
 
 #### 2. Model Development: Architecture Roadmap
 - **Interactive Pipeline Visualization**: A fully responsive, glowing "roadmap" alternating flowchart that visually breaks down the entire pipeline from raw data to isotonic calibration.
@@ -95,13 +108,15 @@ We avoided standard, boring Jupyter Notebook presentations in favor of a customi
 
 ### Frontend Architecture
 - **React.js 18**: Component-driven UI framework utilized for rapid, stateful UI development.
-- **Tailwind CSS 3**: Utility-first styling with advanced custom gradients, complex grid layouts, and seamless dark/light mode integration.
+- **Tailwind CSS 4**: Utility-first styling with advanced custom gradients, complex grid layouts, and seamless dark/light mode integration.
+- **html-to-image & jsPDF**: Used together to parse DOM nodes and natively generate highly structured, customized clinical PDF reports.
 - **ECharts (Apache)**: High-performance, interactive data visualizations (`echarts-for-react`) powering the analytics and Feature Intelligence tabs.
 - **Lucide React**: Premium, lightweight SVG iconography suite.
 - **Vite**: Ultra-fast frontend build tooling and Hot Module Replacement (HMR).
 
 ### Backend Architecture
 - **FastAPI**: Asynchronous Python web framework serving the ML model via REST endpoints with sub-10ms latency.
+- **SQLite**: Lightweight, ultra-fast relational database tracking live historical predictions, patient IDs, and risk scores.
 - **Uvicorn**: Lightning-fast ASGI web server implementation.
 - **Joblib**: Efficient serialization and deserialization of the trained LightGBM meta-learner, base models, and Isotonic scalers.
 - **Pandas / NumPy**: Real-time data manipulation and on-the-fly feature engineering for inference requests.
@@ -151,8 +166,8 @@ We avoided standard, boring Jupyter Notebook presentations in favor of a customi
 ### Production
 - Reproducible (seed=42)
 - Modular REST API
-- React Web Interface
-- Comprehensive logging
+- React Web Interface & PDF Gen
+- Live SQLite DB Logging
 - Visualization suite
 
 </td>
@@ -255,7 +270,7 @@ npm install
 # Run the Vite Dev Server
 npm run dev
 ```
-The interactive UI is now running on `http://localhost:5173`. Open this URL in your browser to explore the dashboard.
+The interactive UI is now running on `http://localhost:5173`. Open this URL in your browser to explore the full dashboard!
 
 ---
 
@@ -322,7 +337,7 @@ To combat the severe 85:15 target imbalance, we utilized a custom SMOTE pipeline
 
 Extensive Exploratory Data Analysis (EDA) drove our engineering decisions. (These insights are dynamically visualized in the **Feature Intelligence** tab of the dashboard).
 
-- **Multi-Collinearity Discovery**: We observed an extreme Pearson correlation (`0.82`) between the `Premium_Cost` and `Prior_Claims` features. This multicollinearity confuses traditional linear models and can lead to feature importance distortion in XGBoost. To resolve this, we engineered an interaction term `Premium_Per_Claim` and utilized strict tree L2 regularization (`reg_lambda`).
+- **Multi-Collinearity Discovery**: We observed an extreme Pearson correlation (`0.82`) between the `Premium_Cost` and `Prior_Claims`. This multicollinearity confuses traditional linear models and can lead to feature importance distortion in XGBoost. To resolve this, we engineered an interaction term `Premium_Per_Claim` and utilized strict tree L2 regularization (`reg_lambda`).
 - **Distribution Overlap**: KDE plotting of the `BMI` feature against the target variable revealed near-perfect overlap between Claimants and Non-Claimants. This mathematical overlap proved that simple linear boundaries (e.g., Logistic Regression) would categorically fail, necessitating the use of non-linear gradient-boosted spatial splits.
 
 ---
@@ -348,15 +363,18 @@ Health-Insurance-Claim-Prediction-Model/
 │
 ├── backend/
 │   ├── api/
-│   │   └── routes.py                  # FastAPI REST endpoints
+│   │   └── routes.py                  # FastAPI REST endpoints + SQLite
 │   ├── main.py                        # Uvicorn server entry point
+│   ├── predictions.db                 # Live SQL Database for History
 │   ├── requirements.txt               # Backend Python dependencies
 │   └── models/                        # Saved Joblib ensemble weights
 │
 ├── frontend/
 │   ├── src/
 │   │   ├── components/                # React UI Components
-│   │   │   ├── Dashboard.jsx          # Live Prediction Interface
+│   │   │   ├── Dashboard.jsx          # Live Prediction + DB History UI
+│   │   │   ├── PredictionForm.jsx     # What-If Sliders + PDF Export Engine
+│   │   │   ├── ChatPanel.jsx          # Gemini LLM Integration
 │   │   │   ├── ModelDev.jsx           # Architecture Roadmap 
 │   │   │   ├── Analytics.jsx          # Results & Metrics Grid
 │   │   │   └── PlotsGallery.jsx       # Interactive Feature EDA
