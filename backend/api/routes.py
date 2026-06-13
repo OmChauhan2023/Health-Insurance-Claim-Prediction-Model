@@ -140,7 +140,7 @@ def get_history():
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     c = conn.cursor()
-    c.execute('SELECT * FROM predictions_history ORDER BY id DESC LIMIT 10')
+    c.execute('SELECT * FROM predictions_history ORDER BY id DESC LIMIT 5')
     rows = c.fetchall()
     conn.close()
     

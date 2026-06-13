@@ -127,7 +127,7 @@ const PredictionForm = ({ onNewPrediction }) => {
             {/* Probability Output */}
             <div className="flex justify-between items-end mt-3 mb-4">
               <div>
-                <p className="text-[10px] text-zinc-500 uppercase tracking-widest font-semibold mb-1">Calibrated Risk</p>
+                <p className="text-xs text-zinc-500 uppercase tracking-widest font-semibold mb-1">Calibrated Risk</p>
                 <span className={`px-2.5 py-0.5 rounded text-xs font-bold uppercase tracking-wider ${
                     result.risk_level === 'High' ? 'bg-rose-100 text-rose-700 dark:bg-rose-900/50 dark:text-rose-400 border border-rose-200 dark:border-rose-800' :
                     result.risk_level === 'Medium' ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/50 dark:text-orange-400 border border-orange-200 dark:border-orange-800' :
@@ -146,7 +146,7 @@ const PredictionForm = ({ onNewPrediction }) => {
             {/* Explainable AI (SHAP Values) */}
             {result.shap_values && (
               <div className="mt-3 pt-3 border-t border-zinc-100 dark:border-zinc-800/60">
-                <p className="text-[10px] text-zinc-500 uppercase tracking-widest font-bold mb-2 flex items-center gap-1">
+                <p className="text-xs text-zinc-500 uppercase tracking-widest font-bold mb-2 flex items-center gap-1">
                   <Activity size={10} /> Top Risk Factors
                 </p>
                 <div className="space-y-2">

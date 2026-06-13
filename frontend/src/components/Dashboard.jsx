@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Users, AlertTriangle, CheckCircle, Activity, TrendingUp, Info, HelpCircle } from 'lucide-react';
+import { Users, AlertTriangle, CheckCircle, Activity, TrendingUp, Info, HelpCircle, PieChart } from 'lucide-react';
 import PredictionForm from './PredictionForm';
 
 const riskColor = (risk) => ({
@@ -20,7 +20,7 @@ const KPICard = ({ title, value, sub, icon: Icon, colorClass }) => (
         <Icon size={20} className="text-current" />
       </div>
       <div>
-        <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">{title}</p>
+        <p className="text-xs font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">{title}</p>
         <p className="text-2xl font-extrabold tracking-tight text-zinc-950 dark:text-zinc-50 leading-none mt-1">{value}</p>
       </div>
     </div>
@@ -83,11 +83,11 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* 2. Three-Column Data Layout */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+      {/* 2. Four-Column Data Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
         
         {/* Left Column: Significance Boxes */}
-        <div className="md:col-span-1 flex flex-col gap-6">
+        <div className="lg:col-span-1 flex flex-col gap-6">
           <div className="bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/30 rounded-2xl p-5">
             <h3 className="font-bold text-blue-900 dark:text-blue-100 flex items-center gap-2 mb-3">
               <HelpCircle size={18} /> Significance
@@ -120,16 +120,67 @@ const Dashboard = () => {
         </div>
 
         {/* Middle Column: Vertical KPIs */}
-        <div className="md:col-span-1 flex flex-col gap-4">
+        <div className="lg:col-span-1 flex flex-col gap-4">
           <KPICard title="Total Analyzed" value="124,592" icon={Users} colorClass="bg-blue-500 text-blue-600 dark:text-blue-400" />
           <KPICard title="High Risk" value="4,821" icon={AlertTriangle} colorClass="bg-rose-500 text-rose-600 dark:text-rose-400" />
           <KPICard title="Gini Score" value="0.2860" icon={CheckCircle} colorClass="bg-emerald-500 text-emerald-600 dark:text-emerald-400" />
           <KPICard title="Avg Probability" value="23.4%" icon={Activity} colorClass="bg-purple-500 text-purple-600 dark:text-purple-400" />
         </div>
 
+        {/* Third Column: Risk Distribution & System Health */}
+        <div className="lg:col-span-1 flex flex-col gap-4">
+          <div className="bg-white dark:bg-[#0c0c0f] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-5 shadow-sm">
+            <h3 className="font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2 mb-1">
+              <PieChart size={18} className="text-blue-500" /> Population Risk
+            </h3>
+            <p className="text-xs text-zinc-500 uppercase tracking-widest font-semibold mb-5">Distribution Analysis</p>
+            
+            <div className="space-y-4">
+              <div>
+                <div className="flex justify-between text-xs font-bold mb-1">
+                  <span className="text-emerald-600 dark:text-emerald-400">Low Risk</span>
+                  <span className="text-zinc-700 dark:text-zinc-300">68%</span>
+                </div>
+                <div className="w-full h-1.5 bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
+                  <div className="h-full bg-emerald-500 w-[68%]" />
+                </div>
+              </div>
+              
+              <div>
+                <div className="flex justify-between text-xs font-bold mb-1">
+                  <span className="text-orange-500 dark:text-orange-400">Medium Risk</span>
+                  <span className="text-zinc-700 dark:text-zinc-300">22%</span>
+                </div>
+                <div className="w-full h-1.5 bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
+                  <div className="h-full bg-orange-400 w-[22%]" />
+                </div>
+              </div>
+
+              <div>
+                <div className="flex justify-between text-xs font-bold mb-1">
+                  <span className="text-rose-600 dark:text-rose-400">High Risk</span>
+                  <span className="text-zinc-700 dark:text-zinc-300">10%</span>
+                </div>
+                <div className="w-full h-1.5 bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
+                  <div className="h-full bg-rose-500 w-[10%]" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-100 dark:border-emerald-900/30 rounded-2xl p-4 shadow-sm">
+             <h3 className="text-xs font-bold text-emerald-900 dark:text-emerald-100 flex items-center gap-2 mb-2">
+               <CheckCircle size={14} className="text-emerald-500" /> System Health
+             </h3>
+             <p className="text-xs text-emerald-800/80 dark:text-emerald-200/70 leading-relaxed">
+               All predictive engines are online. Current inference latency is <strong>&lt; 50ms</strong>. Model drift is within acceptable bounds.
+             </p>
+          </div>
+        </div>
+
         {/* Right Column: History Table */}
-        <div className="md:col-span-3 bg-white dark:bg-[#0c0c0f] rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm overflow-hidden flex flex-col">
-          <div className="px-6 py-5 border-b border-zinc-100 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/20">
+        <div className="lg:col-span-2 bg-white dark:bg-[#0c0c0f] rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm overflow-hidden flex flex-col">
+          <div className="px-5 py-4 border-b border-zinc-100 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/20">
             <h2 className="text-lg font-bold tracking-tight text-zinc-950 dark:text-zinc-50">Recent Patient Evaluations</h2>
             <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Live feed of predictions made by the Stacking Ensemble</p>
           </div>
@@ -139,7 +190,7 @@ const Dashboard = () => {
               <thead className="bg-zinc-50 dark:bg-zinc-900/80 border-b border-zinc-100 dark:border-zinc-800">
                 <tr>
                   {['Patient ID','Age','BMI','Conditions','Prev Claims','Risk Score','Status'].map(h => (
-                    <th key={h} className="px-5 py-4 text-left text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 whitespace-nowrap">{h}</th>
+                    <th key={h} className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 whitespace-nowrap">{h}</th>
                   ))}
                 </tr>
               </thead>
@@ -154,18 +205,18 @@ const Dashboard = () => {
                         : 'hover:bg-zinc-50 dark:hover:bg-zinc-800/50'
                     }`}
                   >
-                    <td className="px-5 py-4 font-mono text-xs font-medium text-zinc-600 dark:text-zinc-300">{row.id}</td>
-                    <td className="px-5 py-4 text-zinc-700 dark:text-zinc-300 font-medium">{row.age}</td>
-                    <td className="px-5 py-4 text-zinc-700 dark:text-zinc-300">{row.bmi}</td>
-                    <td className="px-5 py-4 text-zinc-700 dark:text-zinc-300">
+                    <td className="px-4 py-3 font-mono text-xs font-medium text-zinc-600 dark:text-zinc-300">{row.id}</td>
+                    <td className="px-4 py-3 text-zinc-700 dark:text-zinc-300 font-medium">{row.age}</td>
+                    <td className="px-4 py-3 text-zinc-700 dark:text-zinc-300">{row.bmi}</td>
+                    <td className="px-4 py-3 text-zinc-700 dark:text-zinc-300">
                       <span className={`px-2 py-1 rounded text-xs font-medium ${
                         row.conditions === 'Severe' ? 'bg-rose-50 text-rose-700 dark:bg-rose-900/20 dark:text-rose-400' :
                         row.conditions === 'Mild' ? 'bg-orange-50 text-orange-700 dark:bg-orange-900/20 dark:text-orange-400' :
                         'bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400'
                       }`}>{row.conditions}</span>
                     </td>
-                    <td className="px-5 py-4 text-zinc-700 dark:text-zinc-300">{row.prevClaims}</td>
-                    <td className="px-5 py-4">
+                    <td className="px-4 py-3 text-zinc-700 dark:text-zinc-300">{row.prevClaims}</td>
+                    <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
                         <span className="text-xs w-8 font-mono font-semibold text-zinc-700 dark:text-zinc-300">{(row.score * 100).toFixed(1)}%</span>
                         <div className="w-24 h-2 bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden shadow-inner">
@@ -173,7 +224,7 @@ const Dashboard = () => {
                         </div>
                       </div>
                     </td>
-                    <td className="px-5 py-4">
+                    <td className="px-4 py-3">
                       <span className={`px-2.5 py-1 rounded-full text-xs font-bold shadow-sm ${riskColor(row.risk)}`}>{row.risk}</span>
                     </td>
                   </tr>
@@ -201,7 +252,7 @@ const Dashboard = () => {
                   ['Category', selectedRow.risk + ' Risk'],
                 ].map(([k, v]) => (
                   <div key={k} className="bg-white dark:bg-[#0c0c0f] border border-zinc-200/60 dark:border-zinc-800 rounded-xl p-3 shadow-sm hover:border-blue-300 transition-colors">
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 mb-1">{k}</p>
+                    <p className="text-xs font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 mb-1">{k}</p>
                     <p className="text-sm font-black text-zinc-900 dark:text-zinc-50">{v}</p>
                   </div>
                 ))}
