@@ -49,85 +49,86 @@ const Dashboard = () => {
       
       {/* 1. Hero Section: The Predictor */}
       <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-white/10 dark:border-zinc-800/50 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700">
-        {/* Decorative background shapes */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-pink-500/20 rounded-full blur-[100px] pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-400/20 rounded-full blur-[100px] pointer-events-none" />
         
-        <div className="relative z-10 p-8 md:p-12 flex flex-col xl:flex-row gap-10 items-center">
-          <div className="flex-1 text-white space-y-6">
+        <div className="relative z-10 p-8 md:p-12 flex flex-col xl:flex-row gap-8 lg:gap-10 items-stretch">
+          
+          {/* Left Text Section */}
+          <div className="flex-1 text-white space-y-6 flex flex-col justify-center max-w-lg mx-auto xl:mx-0 xl:pr-6">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 backdrop-blur-md rounded-full text-xs font-semibold tracking-wider text-blue-100 border border-white/20 mb-6">
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 backdrop-blur-md rounded-full text-xs font-semibold tracking-wider text-blue-100 border border-white/20 mb-6 shadow-sm">
                 <TrendingUp size={14} /> LIVE INFERENCE
               </div>
               <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4 leading-tight">
                 Predict Claim <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-200 to-pink-200">Risk Instantly.</span>
               </h1>
-              <p className="text-blue-100/80 text-lg leading-relaxed max-w-xl">
-                Enter patient features below to calculate their probability of filing an insurance claim. Our Stacking Ensemble model analyzes 50 distinct data points to output a highly calibrated risk score.
+              <p className="text-blue-100/90 text-lg leading-relaxed mb-6">
+                Adjust the patient features to calculate their probability of filing an insurance claim. Our Stacking Ensemble instantly computes the SHAP values and calibrated risk.
               </p>
             </div>
             
-            <div className="bg-black/20 backdrop-blur-sm rounded-xl p-4 border border-white/10 flex gap-4 items-start max-w-xl">
+            <div className="bg-black/20 backdrop-blur-sm rounded-xl p-4 border border-white/10 flex gap-4 items-start">
               <Info className="text-blue-300 shrink-0 mt-0.5" size={20} />
               <p className="text-sm text-blue-50/90 leading-relaxed">
-                <strong>How does this work?</strong> This tool uses historical patient health data (BMI, age, prior conditions) to identify patterns that lead to claims. It helps insurers proactively offer wellness programs to high-risk patients before expensive claims occur!
+                <strong>How does this work?</strong> This tool uses historical patient health data to identify patterns that lead to claims.
               </p>
             </div>
           </div>
 
-          <div className="w-full xl:w-[480px] bg-white dark:bg-[#0c0c0f] rounded-2xl p-6 shadow-2xl border border-zinc-200/50 dark:border-zinc-800 relative z-20">
-            <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-50 mb-4">Live Patient Risk Engine</h2>
+          {/* Right Predictor Section (2 Columns Internally) */}
+          <div className="flex-[2] w-full bg-white dark:bg-[#0c0c0f] rounded-2xl p-5 shadow-2xl border border-zinc-200/50 dark:border-zinc-800 relative z-20">
             <PredictionForm onNewPrediction={fetchHistory} />
           </div>
         </div>
       </div>
 
-      {/* 2. KPIs (moved below hero, made colorful) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-        <KPICard title="Total Analyzed" value="124,592" icon={Users} colorClass="bg-blue-500 text-blue-600 dark:text-blue-400" />
-        <KPICard title="High Risk" value="4,821" icon={AlertTriangle} colorClass="bg-rose-500 text-rose-600 dark:text-rose-400" />
-        <KPICard title="Gini Score" value="0.2860" icon={CheckCircle} colorClass="bg-emerald-500 text-emerald-600 dark:text-emerald-400" />
-        <KPICard title="Avg Probability" value="23.4%" icon={Activity} colorClass="bg-purple-500 text-purple-600 dark:text-purple-400" />
-      </div>
-
-      {/* 3. History Table with Context */}
-      <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
+      {/* 2. Three-Column Data Layout */}
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
         
-        {/* Educational Sidebar */}
-        <div className="xl:col-span-1 space-y-6">
-          <div className="bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/30 rounded-2xl p-6">
+        {/* Left Column: Significance Boxes */}
+        <div className="md:col-span-1 flex flex-col gap-6">
+          <div className="bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/30 rounded-2xl p-5">
             <h3 className="font-bold text-blue-900 dark:text-blue-100 flex items-center gap-2 mb-3">
-              <HelpCircle size={18} /> Understanding the Results
+              <HelpCircle size={18} /> Significance
             </h3>
-            <p className="text-sm text-blue-800/80 dark:text-blue-200/70 leading-relaxed mb-4">
-              The table shows recent patients evaluated by the model. The <strong>Risk Score</strong> is the probability (from 0% to 100%) that the patient will file a claim.
+            <p className="text-xs text-blue-800/80 dark:text-blue-200/70 leading-relaxed mb-4">
+              The table shows recent patients evaluated. The <strong>Risk Score</strong> is the probability (from 0% to 100%) that the patient will file a claim.
             </p>
-            <ul className="space-y-3 text-sm">
-              <li className="flex gap-3 items-start">
-                <span className="w-2.5 h-2.5 rounded-full bg-rose-500 mt-1 shrink-0 shadow-sm shadow-rose-500/50" />
-                <span className="text-blue-900/90 dark:text-blue-100/80"><strong>High Risk (&gt;70%)</strong>: Immediate wellness intervention recommended.</span>
+            <ul className="space-y-3 text-xs">
+              <li className="flex gap-2 items-start">
+                <span className="w-2 h-2 rounded-full bg-rose-500 mt-1 shrink-0 shadow-sm shadow-rose-500/50" />
+                <span className="text-blue-900/90 dark:text-blue-100/80"><strong>High</strong>: Immediate intervention.</span>
               </li>
-              <li className="flex gap-3 items-start">
-                <span className="w-2.5 h-2.5 rounded-full bg-orange-400 mt-1 shrink-0 shadow-sm shadow-orange-400/50" />
-                <span className="text-blue-900/90 dark:text-blue-100/80"><strong>Medium Risk (40-70%)</strong>: Monitor health indicators over time.</span>
+              <li className="flex gap-2 items-start">
+                <span className="w-2 h-2 rounded-full bg-orange-400 mt-1 shrink-0 shadow-sm shadow-orange-400/50" />
+                <span className="text-blue-900/90 dark:text-blue-100/80"><strong>Medium</strong>: Monitor closely.</span>
               </li>
-              <li className="flex gap-3 items-start">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 mt-1 shrink-0 shadow-sm shadow-emerald-500/50" />
-                <span className="text-blue-900/90 dark:text-blue-100/80"><strong>Low Risk (&lt;40%)</strong>: Standard policy coverage applies.</span>
+              <li className="flex gap-2 items-start">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 mt-1 shrink-0 shadow-sm shadow-emerald-500/50" />
+                <span className="text-blue-900/90 dark:text-blue-100/80"><strong>Low</strong>: Standard policy.</span>
               </li>
             </ul>
           </div>
           
-          <div className="bg-white dark:bg-[#0c0c0f] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 shadow-sm">
-             <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-100 mb-2">Model Performance Context</h3>
-             <p className="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed">
-               This model achieved a <strong>0.2860 Gini score</strong>. In insurance analytics, this means our AI is about 28.6% better at perfectly ranking patients by risk compared to random guessing!
+          <div className="bg-white dark:bg-[#0c0c0f] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-5 shadow-sm">
+             <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-100 mb-2">Performance Context</h3>
+             <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+               Achieving a <strong>0.2860 Gini score</strong> means the Stacking AI is 28.6% better at perfectly ranking patients by risk than random guessing!
              </p>
           </div>
         </div>
 
-        {/* Table */}
-        <div className="xl:col-span-3 bg-white dark:bg-[#0c0c0f] rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm overflow-hidden flex flex-col">
+        {/* Middle Column: Vertical KPIs */}
+        <div className="md:col-span-1 flex flex-col gap-4">
+          <KPICard title="Total Analyzed" value="124,592" icon={Users} colorClass="bg-blue-500 text-blue-600 dark:text-blue-400" />
+          <KPICard title="High Risk" value="4,821" icon={AlertTriangle} colorClass="bg-rose-500 text-rose-600 dark:text-rose-400" />
+          <KPICard title="Gini Score" value="0.2860" icon={CheckCircle} colorClass="bg-emerald-500 text-emerald-600 dark:text-emerald-400" />
+          <KPICard title="Avg Probability" value="23.4%" icon={Activity} colorClass="bg-purple-500 text-purple-600 dark:text-purple-400" />
+        </div>
+
+        {/* Right Column: History Table */}
+        <div className="md:col-span-3 bg-white dark:bg-[#0c0c0f] rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm overflow-hidden flex flex-col">
           <div className="px-6 py-5 border-b border-zinc-100 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/20">
             <h2 className="text-lg font-bold tracking-tight text-zinc-950 dark:text-zinc-50">Recent Patient Evaluations</h2>
             <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Live feed of predictions made by the Stacking Ensemble</p>
