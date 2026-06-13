@@ -33,7 +33,8 @@ const Dashboard = () => {
 
   const fetchHistory = async () => {
     try {
-      const res = await axios.get('http://localhost:8000/api/history');
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+      const res = await axios.get(`${API_URL}/api/history`);
       setHistoryData(res.data.history || []);
     } catch (e) {
       console.error("Failed to fetch history");
