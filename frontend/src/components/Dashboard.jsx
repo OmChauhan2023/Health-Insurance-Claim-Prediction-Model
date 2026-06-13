@@ -1,15 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { Users, AlertTriangle, CheckCircle, Activity, TrendingUp, Info, HelpCircle } from 'lucide-react';
 import PredictionForm from './PredictionForm';
-
-const mockHistory = [
-  { id: 'PT-9812', age: 58, bmi: 34.1, conditions: 'Severe', prevClaims: 4, score: 0.89, risk: 'High' },
-  { id: 'PT-4321', age: 42, bmi: 27.3, conditions: 'Mild',   prevClaims: 1, score: 0.45, risk: 'Medium' },
-  { id: 'PT-1102', age: 28, bmi: 21.8, conditions: 'None',   prevClaims: 0, score: 0.09, risk: 'Low' },
-  { id: 'PT-5543', age: 67, bmi: 31.2, conditions: 'Severe', prevClaims: 6, score: 0.82, risk: 'High' },
-  { id: 'PT-3311', age: 35, bmi: 24.5, conditions: 'None',   prevClaims: 0, score: 0.15, risk: 'Low' },
-  { id: 'PT-7789', age: 51, bmi: 29.7, conditions: 'Mild',   prevClaims: 2, score: 0.58, risk: 'Medium' },
-];
 
 const riskColor = (risk) => ({
   High:   'bg-rose-500 text-white shadow-rose-500/30',
@@ -37,6 +29,20 @@ const KPICard = ({ title, value, sub, icon: Icon, colorClass }) => (
 
 const Dashboard = () => {
   const [selectedRow, setSelectedRow] = useState(null);
+  const [historyData, setHistoryData] = useState([]);
+
+  const fetchHistory = async () => {
+    try {
+      const res = await axios.get('http://localhost:8000/api/history');
+      setHistoryData(res.data.history || []);
+    } catch (e) {
+      console.error("Failed to fetch history");
+    }
+  };
+
+  useEffect(() => {
+    fetchHistory();
+  }, []);
 
   return (
     <div className="flex flex-col gap-8">
@@ -70,8 +76,8 @@ const Dashboard = () => {
           </div>
 
           <div className="w-full xl:w-[480px] bg-white dark:bg-[#0c0c0f] rounded-2xl p-6 shadow-2xl border border-zinc-200/50 dark:border-zinc-800 relative z-20">
-            <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-50 mb-4">Run Prediction</h2>
-            <PredictionForm />
+            <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-50 mb-4">Live Patient Risk Engine</h2>
+            <PredictionForm onNewPrediction={fetchHistory} />
           </div>
         </div>
       </div>
@@ -137,7 +143,7 @@ const Dashboard = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/50">
-                {mockHistory.map((row, i) => (
+                {historyData.map((row, i) => (
                   <tr
                     key={i}
                     onClick={() => setSelectedRow(selectedRow?.id === row.id ? null : row)}
