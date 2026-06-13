@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react'
-import { Sun, Moon, ShieldCheck, BrainCircuit, BarChart3, ImageIcon, MessageSquare, X } from 'lucide-react'
+import { Sun, Moon, ShieldCheck, BrainCircuit, BarChart3, Search, MessageSquare, X } from 'lucide-react'
 import Dashboard from './components/Dashboard'
 import ModelDev from './components/ModelDev'
 import Analytics from './components/Analytics'
@@ -10,7 +10,7 @@ const TABS = [
   { id: 'home',      label: 'Home',              Icon: ShieldCheck },
   { id: 'model',     label: 'Model Development', Icon: BrainCircuit },
   { id: 'analytics', label: 'Analytics & Results', Icon: BarChart3 },
-  { id: 'plots',     label: 'EDA Plots',          Icon: ImageIcon },
+  { id: 'plots',     label: 'Feature Intelligence', Icon: Search },
 ]
 
 function App() {

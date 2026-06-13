@@ -53,19 +53,21 @@ const ModelDev = () => {
   return (
     <div className="flex flex-col gap-10 pb-16">
       
-      {/* Sleek inline header */}
-      <div className="flex items-end justify-between border-b border-zinc-200 dark:border-zinc-800 pb-4">
-        <div>
-          <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400 font-bold tracking-widest text-xs uppercase mb-1">
-            <Zap size={14} /> Architecture Deep Dive
+      {/* Gradient Header Box */}
+      <div className="bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 rounded-2xl p-1 shadow-lg mb-4">
+        <div className="bg-white dark:bg-[#0c0c0f] rounded-xl p-6 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div>
+            <div className="flex items-center gap-2 text-emerald-500 font-bold tracking-widest text-xs uppercase mb-1">
+              <Zap size={14} /> Architecture Deep Dive
+            </div>
+            <h2 className="text-3xl font-extrabold text-zinc-900 dark:text-zinc-50 tracking-tight">
+              ZEBRA Training Pipeline
+            </h2>
           </div>
-          <h2 className="text-3xl font-extrabold text-zinc-900 dark:text-zinc-50 tracking-tight">
-            ZEBRA Training Pipeline
-          </h2>
-        </div>
-        <div className="text-right hidden md:block">
-          <p className="text-sm text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-semibold">Final Gini Score</p>
-          <p className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-teal-400">0.2860</p>
+          <div className="border-l-4 border-emerald-500 pl-5 py-1 text-left hidden md:block">
+            <p className="text-sm text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-semibold">Final Gini Score</p>
+            <p className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-teal-400">0.2860</p>
+          </div>
         </div>
       </div>
 
